@@ -14,7 +14,7 @@ class ConvE(BaseModel):
         self.emb_dim = kwargs.get('emb_dim')
         self.E = torch.nn.Embedding(self.entity_cnt, self.emb_dim)
         self.R = torch.nn.Embedding(self.relation_cnt, self.emb_dim)
-        self.input_drop = torch.nn.Dropout(kwargs.get('emb_dropout'))
+        self.input_drop = torch.nn.Dropout(kwargs.get('input_dropout'))
         self.feature_map_drop = torch.nn.Dropout2d(kwargs.get('feature_map_dropout'))
         self.hidden_drop = torch.nn.Dropout(kwargs.get('hidden_dropout'))
         self.conv_out_channels = kwargs.get('conv_out_channels')
