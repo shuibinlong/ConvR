@@ -7,7 +7,7 @@
 		"conv_out_channels": 100,
 		"conv_kernel_size": [5, 5],
 		"stride": 1,
-		"input_dropout": 0.2,
+		"input_dropout": 0.3,
 		"feature_map_dropout": 0.2,
 		"hidden_dropout": 0.3,
 		"label_smoothing": 0.1,
@@ -20,7 +20,7 @@
 	},
 	"train": {
 		"batch_size": 128,
-		"epochs": 5,
+		"epochs": 500,
 		"seed": 123,
 		"pretrain_model": null
 	},

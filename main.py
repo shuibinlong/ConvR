@@ -40,7 +40,7 @@ class Experiment:
             logging.error('Could not find corresponding optimizer for algorithm={}'.format(opt_conf.get('algorithm')))
         self.save_model_path = config.get('save_model_path')
     
-    def train_and_eval(self):
+    def train_and_eval(self, config):
         train_loader = DataLoader(self.dataset.data['train'], self.train_conf.get('batch_size'), shuffle=self.train_conf.get("shuffle"), drop_last=False)
         if self.dataset.data['valid']:
             valid_loader = DataLoader(self.dataset.data['valid'], self.eval_conf.get('batch_size'), shuffle=False, drop_last=False)
@@ -49,7 +49,7 @@ class Experiment:
         for epoch in range(self.train_conf.get('epochs')):
             logging.info('Start training epoch: %d' % (epoch + 1))
             start_time = time.time()
-            epoch_loss = self.train_func(train_loader, self.model, self.optimizer, self.device)
+            epoch_loss = self.train_func(config, train_loader, self.model, self.optimizer, self.device)
             end_time = time.time()
             mean_loss = np.mean(epoch_loss)
             print('[Epoch #%d] training loss: %f - training time: %.2f seconds' % (epoch + 1, mean_loss, end_time - start_time))
@@ -58,14 +58,14 @@ class Experiment:
                 logging.info('Start evaluation of validation data')
                 self.model.eval()
                 with torch.no_grad():
-                    eval_results = self.eval_func(valid_loader, self.model, self.device, self.dataset.data, self.eval_conf.get('scoring_desc'))
+                    eval_results = self.eval_func(config, valid_loader, self.model, self.device, self.dataset.data, self.eval_conf.get('scoring_desc'))
                     self.output_func(eval_results, 'validation')
         if self.eval_conf.get('do_test'):
             print(f'--- test ---')
             logging.info('Start evaluation on test data')
             self.model.eval()
             with torch.no_grad():
-                eval_results = self.eval_func(test_loader, self.model, self.device, self.dataset.data, self.eval_conf.get('scoring_desc'))
+                eval_results = self.eval_func(config, test_loader, self.model, self.device, self.dataset.data, self.eval_conf.get('scoring_desc'))
                 self.output_func(eval_results, 'test')
         if not os.path.exists(self.save_model_path):
             os.makedirs(self.save_model_path)
@@ -82,4 +82,4 @@ if __name__ == '__main__':
     print(config)
 
     experiment = Experiment(config)
-    experiment.train_and_eval()
+    experiment.train_and_eval(config)
